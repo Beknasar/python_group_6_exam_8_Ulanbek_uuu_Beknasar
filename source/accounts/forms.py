@@ -8,8 +8,7 @@ from accounts.models import Profile
 
 class MyUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
-        fields = ['username', 'password1', 'password2',
-                  'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'password1', 'password2', 'email']
 
     def save(self, commit=True):
         user = super().save(commit=commit)

@@ -54,40 +54,40 @@ class RegisterView(CreateView):
         return next_url
 
 
-class UserListView(PermissionRequiredMixin, ListView):
-    template_name = 'user_list.html'
-    context_object_name = 'users'
+# class UserListView(PermissionRequiredMixin, ListView):
+#     template_name = 'user_list.html'
+#     context_object_name = 'users'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         form = SearchForm(data=self.request.GET)
+#         if form.is_valid():
+#             search = form.cleaned_data['search']
+#             kwargs['search'] = search
+#         kwargs['form'] = form
+#         return super().get_context_data(object_list=object_list, **kwargs)
+#
+#     def get_queryset(self):
+#         data = User.objects.all()
+#         form = SearchForm(data=self.request.GET)
+#         if form.is_valid():
+#             search = form.cleaned_data['search']
+#             if search:
+#                 data = data.filter(Q(name__icontains=search) | Q(description__icontains=search))
+#         return data
+#
+#     def has_permission(self):
+#         return self.request.user.groups.filter(pk=2) or self.request.user.groups.filter(pk=3) or self.request.user.pk == 1
+#
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        form = SearchForm(data=self.request.GET)
-        if form.is_valid():
-            search = form.cleaned_data['search']
-            kwargs['search'] = search
-        kwargs['form'] = form
-        return super().get_context_data(object_list=object_list, **kwargs)
-
-    def get_queryset(self):
-        data = User.objects.all()
-        form = SearchForm(data=self.request.GET)
-        if form.is_valid():
-            search = form.cleaned_data['search']
-            if search:
-                data = data.filter(Q(name__icontains=search) | Q(description__icontains=search))
-        return data
-
-    def has_permission(self):
-        return self.request.user.groups.filter(pk=2) or self.request.user.groups.filter(pk=3) or self.request.user.pk == 1
-
-
-class UserDetailView(LoginRequiredMixin, PermissionRequiredMixin ,DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = get_user_model()
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
     paginate_related_by = 5
     paginate_related_orphans = 0
 
-    def has_permission(self):
-        return self.request.user.pk == self.kwargs['pk']
+    # def has_permission(self):
+    #     return self.request.user.pk == self.kwargs['pk']
 
     def get_context_data(self, **kwargs):
         # print(self.object.orders.all())

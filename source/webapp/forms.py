@@ -11,3 +11,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         exclude = []
 
+class ProductReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['text', 'rating']
