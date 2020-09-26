@@ -15,7 +15,7 @@ class ProductForm(forms.ModelForm):
 class ModerReviewForm(forms.ModelForm):
     class Meta:
         model=Review
-        fields = ['status']
+        fields = ['text', 'status', 'rating']
 
 class ProductReviewForm(forms.ModelForm):
     class Meta:
