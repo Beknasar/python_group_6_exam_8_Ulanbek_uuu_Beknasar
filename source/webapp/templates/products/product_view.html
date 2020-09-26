@@ -35,12 +35,12 @@
                 <hr>
                 <p>Rate: {{ review.rating }}</p>
                 <div class="pre">{{ review.text }}</div>
-{#                {% if perms.webapp.change_comment or review.author == request.user %}#}
-{#                    <p><a href="{% url 'comment_update' review.pk %}">Update</a></p>#}
-{#                {% endif %}#}
-{#                {% if perms.webapp.delete_comment or review.author == request.user %}#}
-{#                    <p><a href="{% url 'comment_delete' review.pk %}">Delete</a></p>#}
-{#                {% endif %}#}
+                {% if perms.webapp.change_review or review.author == request.user %}
+                    <p><a href="{% url 'review_update' review.pk %}" class="card-link">Update</a></p>
+                {% endif %}
+                {% if perms.webapp.delete_review or review.author == request.user %}
+                    <p><a href="{% url 'review_delete' review.pk %}" class="card-link">Delete</a></p>
+                {% endif %}
             </div>
         {% empty %}
             <p>Нет отзыва</p>

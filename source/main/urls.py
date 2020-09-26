@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from webapp.views import IndexView, ProductView, ProductUpdateView, ProductDeleteView, ProductCreateView, \
-    ProductReviewCreateView
+    ProductReviewCreateView, ReviewUpdateView, ReviewDeleteView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,4 +30,6 @@ urlpatterns = [
     path('product/<int:pk>/review/add/', ProductReviewCreateView.as_view(), name='product_review_add'),
     path('accounts/', include('accounts.urls')),
 
+    path('review/<int:pk>/update/', ReviewUpdateView.as_view(), name='review_update'),
+    path('review/<int:pk>/delete/', ReviewDeleteView.as_view(), name='review_delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
