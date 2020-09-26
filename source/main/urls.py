@@ -17,10 +17,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from webapp.views import IndexView
+from webapp.views import IndexView, ProductView, ProductUpdateView, ProductDeleteView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
+    path('product/<int:pk>/', ProductView.as_view(), name='product_view'),
+    path('product/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
+    # path('product/create/', ProductCreateView.as_view(), name='product_create'),
+    path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
     path('accounts/', include('accounts.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

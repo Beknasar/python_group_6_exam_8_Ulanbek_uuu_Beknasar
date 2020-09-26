@@ -1,4 +1,8 @@
-from webapp.forms import SearchForm
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView, UpdateView, DeleteView
+
+from webapp.forms import SearchForm, ProductForm
 from webapp.models import Product
 from webapp.views.base_views import SearchView
 
@@ -11,27 +15,42 @@ class IndexView(SearchView):
     paginate_by = 5
     context_object_name = 'products'
 
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     data = Category.objects.all()
-    #     context['categories'] = data
-    #     return context
+    def get_queryset(self):
+        return super().get_queryset()
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     self.test_session_key()
-    #     self.test_session_data()
-    #     return super().dispatch(request, *args, **kwargs)
+
+class ProductView(DetailView):
+    model = Product
+    template_name = 'products/product_view.html'
 
     def get_queryset(self):
         return super().get_queryset()
 
-    # def test_session_data(self):
-    #     if 'check' not in self.request.session:
-    #         self.request.session['check'] = 0
-    #     self.request.session['check'] += 1
-    #     print(self.request.session['check'])
+
+class ProductUpdateView(UpdateView):
+    template_name = 'products/product_update.html'
+    form_class = ProductForm
+    model = Product
+    context_object_name = 'product'
+
+    # def has_permission(self):
+    #     return super().has_permission()
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get_success_url(self):
+        return reverse('product_view', kwargs={'pk': self.object.pk})
+
+
+class ProductDeleteView(DeleteView):
+    template_name = 'products/product_delete.html'
+    model = Product
+    success_url = reverse_lazy('index')
+    # permission_required = 'webapp.delete_product'
     #
-    # def test_session_key(self):
-    #     print(self.request.session.session_key)
-    #     if not self.request.session.session_key:
-    #         self.request.session.save()
+    # def has_permission(self):
+    #     return super().has_permission()
+
+    def get_queryset(self):
+        return super().get_queryset()

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}View{% endblock %}
+
+{% block menu %}
+{#    {% if perms.webapp.delete_product %}#}
+        <li><a href="{% url 'product_delete' product.pk %}">Delete <i class="fas fa-trash"></i></a></li>
+{#    {% endif %}#}
+{#    {% if perms.webapp.change_product %}#}
+        <li><a href="{% url 'product_update' product.pk %}">Update <i class="fas fa-edit"></i></a></li>
+{#    {% endif %}#}
+{% endblock %}
+
+{% block content %}
+    <div class="product_view">
+        {% if product.picture %}
+            <img src="{{ product.picture.url }}" class="picture" width="auto" height="250" alt="product picture">
+        {% else %}
+            <img src="{% static 'img/empty.jpg' %}" width="250" height="250" alt="empty picture">
+        {% endif %}
+        <h1>{{ product.name }}</h1>
+        <p>Категория: {{ product.category }}</p>
+        <label>Описание:</label>
+        <p class="pre">{{ product.description }}</p>
+    </div>
+{% endblock %}

@@ -82,6 +82,16 @@ body {
 	line-height: 24px; /**/
 }
 
+.card-link{
+	float: right;
+    color: #02918c;
+    margin-right: 10px;
+}
+
+.card-link:hover {
+    color: black;
+}
+
 .card-button{
 	width:  298px;
 	height: 50px;
@@ -254,4 +264,8 @@ body {
 .table td {
     padding-right: 15px;
     border: solid black 1px;
+}
+
+.picture {
+    border: solid 2px #6a7dff;
 }
