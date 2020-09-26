@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, UpdateView, DeleteView
+from django.views.generic import DetailView, UpdateView, DeleteView, CreateView
 
 from webapp.forms import SearchForm, ProductForm
 from webapp.models import Product
@@ -54,3 +54,16 @@ class ProductDeleteView(DeleteView):
 
     def get_queryset(self):
         return super().get_queryset()
+
+
+class ProductCreateView(CreateView):
+    template_name = 'products/product_create.html'
+    form_class = ProductForm
+    model = Product
+    # permission_required = 'webapp.add_product'
+    #
+    # def has_permission(self):
+    #     return super().has_permission()
+
+    def get_success_url(self):
+        return reverse('product_view', kwargs={'pk': self.object.pk})
