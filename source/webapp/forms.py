@@ -14,10 +14,11 @@ class ProductForm(forms.ModelForm):
 
 class ModerReviewForm(forms.ModelForm):
     class Meta:
-        model=Review
-        fields = ['text', 'status', 'rating']
+        model = Review
+        fields = ['status']
+
 
 class ProductReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['text', 'rating']
+        exclude = ['status', 'author' , 'product']

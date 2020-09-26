@@ -23,17 +23,17 @@ class ProductReviewCreateView(LoginRequiredMixin, CreateView):
 
 
 class ReviewModerateUpdateView(PermissionRequiredMixin, UpdateView):
-    template_name = 'review/review_update.html'
-    form_class = ModerReviewForm
     model = Review
-    permission_required = 'webapp.change_product'
+    template_name = 'review/review_status_edit.html'
+    form_class = ModerReviewForm
+    permission_required = 'webapp.change_review'
 
     def has_permission(self):
         review = self.get_object()
-        return super().has_permission()
+        return super().has_permission() or review.author == self.request.user
 
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.product.pk})
+        return reverse('product_view', kwargs={'pk': self.object.product.pk})
 
 
 class ReviewUpdateView(PermissionRequiredMixin, UpdateView):
@@ -49,8 +49,6 @@ class ReviewUpdateView(PermissionRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('product_view', kwargs={'pk': self.object.product.pk})
 
-    def post(self):
-        form = self.get_object()
 
 class ReviewDeleteView(PermissionRequiredMixin, DeleteView):
     model = Review

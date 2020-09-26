@@ -29,7 +29,7 @@
             {% include 'partial/pagination.html' %}
         {% endif %}
         {% for review in reviews %}
-        {% if review.status == 'moderated' or perms.webapp.change_review %}
+        {% if review.status.pk == 1 or perms.webapp.change_review %}
         <div class="box">
             <h3>Автор:
                 <a href="{% url 'accounts:detail' review.author_id %}" class="card-link">{{ review.author }}</a>
