@@ -12,7 +12,11 @@ CATEGORY_CHOICES = {
     ('tools', 'Инструменты'),
     ('chemicals', 'Бытовая химия')
 }
-
+DEFAULT_STATUS = 'not moderated'
+STATUS_CHOICES = {
+    (DEFAULT_STATUS, 'Не модерирован'),
+    ('moderated', "Модерирован"),
+}
 
 class Product(models.Model):
     name = models.CharField(max_length=35, null=False, blank=False, verbose_name='Название')
@@ -34,4 +38,13 @@ class Review(models.Model):
                                 verbose_name='Продукты')
     text = models.TextField(max_length=2000,  verbose_name='Текст отзыва')
     rating = models.FloatField(verbose_name='Оценка', validators=(MinValueValidator(0),MaxValueValidator(5), ))
+    status = models.CharField(max_length=20, default=DEFAULT_STATUS, choices=STATUS_CHOICES,
+                                verbose_name='Статус')
+
+    def __str__(self):
+        return f'{self.text} -- {self.author}'
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural='Отзывы'
 

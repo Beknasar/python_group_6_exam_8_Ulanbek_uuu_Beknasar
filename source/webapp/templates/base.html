@@ -17,7 +17,7 @@
         <ul class="menu">
             <li><a href="{% url 'index' %}">Home</a></li>
         {% if request.user.is_authenticated %}
-            {% if perms.webapp.change_project and request.user.groups.all or request.user.pk == 1 %}
+            {% if perms.webapp.add_product %}
                 <li><a href="{% url 'product_create' %}">Add Product</a></li>
 {#                <li><a href="{% url 'accounts:list' %}">User list</a></li>#}
             {% endif %}

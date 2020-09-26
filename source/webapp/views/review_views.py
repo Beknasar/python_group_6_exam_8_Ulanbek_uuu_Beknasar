@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, UpdateView, DeleteView
 
 from webapp.models import Review, Product
-from webapp.forms import ProductReviewForm
+from webapp.forms import ProductReviewForm, ModerReviewForm
 
 
 class ProductReviewCreateView(LoginRequiredMixin, CreateView):
@@ -20,6 +20,19 @@ class ProductReviewCreateView(LoginRequiredMixin, CreateView):
         review.save()
         # form.save_m2m()  ## для сохранения связей многие-ко-многим
         return redirect('product_view', pk=product.pk)
+
+
+class ReviewModerateUpdateView(PermissionRequiredMixin, UpdateView):
+    template_name = 'products/product_update.html'
+    form_class = ModerReviewForm
+    model = Product
+    permission_required = 'webapp.change_product'
+
+    def has_permission(self):
+        return super().has_permission()
+
+    def get_success_url(self):
+        return reverse('project_view', kwargs={'pk': self.object.product.pk})
 
 
 class ReviewUpdateView(PermissionRequiredMixin, UpdateView):
@@ -49,3 +62,5 @@ class ReviewDeleteView(PermissionRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('product_view', kwargs={'pk': self.object.product.pk})
+
+

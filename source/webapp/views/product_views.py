@@ -19,14 +19,15 @@ class IndexView(SearchView):
     context_object_name = 'products'
 
     # def get_context_data(self, **kwargs):
-    #     # context = super().get_context_data(**kwargs)
-    #     # self.average = 0
+    #     context = super().get_context_data(**kwargs)
+    #     self.average = 0
     #     # Article.objects.annotate(annotated=Coalesce(Count("field"), 0))
     #     for product in Product.objects.all():
+    #         product.product_reviews
     #         product.product_reviews.all().annotate(average=Coalesce(Avg('rating'),0))
     #     # context['average'] = self.average
-    #     return super().get_context_data(**kwargs)
-
+    #     return context
+    #
     # def get_average(self, product):
     #     reviews = product.product_reviews.all()
     #     self.average = 0
@@ -48,25 +49,19 @@ class ProductView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        average = self.get_average(self.object)
+        avg = self.get_average(self.object)
         reviews, page, is_paginated = self.paginate_reviews(self.object)
-        context['average'] = average
+        context['average'] = avg['average']
         context['reviews'] = reviews
         context['page_obj'] = page
         context['is_paginated'] = is_paginated
         return context
 
     def get_average(self, product):
-        reviews = product.product_reviews.all()
-        average = 0
-        if reviews:
-            for review in reviews:
-                average += review.rating
-            average /= reviews.count()
-        else:
-            average = 0
-        # print(average)
-        return average
+        avg = product.product_reviews.all().aggregate(average=Avg('rating'))
+        if avg['average'] == None :
+            avg['average'] = 0
+        return avg
 
     def paginate_reviews(self, product):
         reviews = product.product_reviews.all().order_by('-rating')
@@ -88,9 +83,10 @@ class ProductUpdateView(UpdateView):
     form_class = ProductForm
     model = Product
     context_object_name = 'product'
+    permission_required = 'webapp.change_product'
 
-    # def has_permission(self):
-    #     return super().has_permission()
+    def has_permission(self):
+        return super().has_permission()
 
     def get_queryset(self):
         return super().get_queryset()
@@ -103,10 +99,10 @@ class ProductDeleteView(DeleteView):
     template_name = 'products/product_delete.html'
     model = Product
     success_url = reverse_lazy('index')
-    # permission_required = 'webapp.delete_product'
-    #
-    # def has_permission(self):
-    #     return super().has_permission()
+    permission_required = 'webapp.delete_product'
+
+    def has_permission(self):
+        return super().has_permission()
 
     def get_queryset(self):
         return super().get_queryset()
@@ -116,10 +112,10 @@ class ProductCreateView(CreateView):
     template_name = 'products/product_create.html'
     form_class = ProductForm
     model = Product
-    # permission_required = 'webapp.add_product'
-    #
-    # def has_permission(self):
-    #     return super().has_permission()
+    permission_required = 'webapp.add_product'
+
+    def has_permission(self):
+        return super().has_permission()
 
     def get_success_url(self):
         return reverse('product_view', kwargs={'pk': self.object.pk})

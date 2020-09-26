@@ -3,12 +3,12 @@
 {% block title %}View{% endblock %}
 
 {% block menu %}
-{#    {% if perms.webapp.delete_product %}#}
+    {% if perms.webapp.delete_product %}
         <li><a href="{% url 'product_delete' product.pk %}">Delete <i class="fas fa-trash"></i></a></li>
-{#    {% endif %}#}
-{#    {% if perms.webapp.change_product %}#}
+    {% endif %}
+    {% if perms.webapp.change_product %}
         <li><a href="{% url 'product_update' product.pk %}">Update <i class="fas fa-edit"></i></a></li>
-{#    {% endif %}#}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -29,21 +29,27 @@
             {% include 'partial/pagination.html' %}
         {% endif %}
         {% for review in reviews %}
-            <div class="box">
-                <h3>Автор:
-                    <a href="{% url 'accounts:detail' review.author_id %}" class="card-link">{{ review.author }}</a>
-                </h3>
-                <p>Email: {{ review.author.email }}</p>
-                <p>Rate: {{ review.rating }}</p>
-                <hr>
-                <div class="pre">{{ review.text }}</div>
-                {% if perms.webapp.change_review or review.author == request.user %}
-                    <p><a href="{% url 'review_update' review.pk %}" class="card-link">Update</a></p>
-                {% endif %}
-                {% if perms.webapp.delete_review or review.author == request.user %}
-                    <p><a href="{% url 'review_delete' review.pk %}" class="card-link">Delete</a></p>
-                {% endif %}
-            </div>
+        {% if review.status == 'moderated' or perms.webapp.change_review %}
+        <div class="box">
+            <h3>Автор:
+                <a href="{% url 'accounts:detail' review.author_id %}" class="card-link">{{ review.author }}</a>
+            </h3>
+            <p>Email: {{ review.author.email }}</p>
+            <p>Rate: {{ review.rating }}</p>
+            <p>Status: {{ review.status }}</p>
+            <hr>
+            <div class="pre">{{ review.text }}</div>
+            {% if perms.webapp.change_product %}
+                <p><a href="{% url 'moderate' review.pk %}" class="card-link">Moderate</a></p>
+            {% endif %}
+            {% if perms.webapp.change_review or review.author == request.user %}
+                <p><a href="{% url 'review_update' review.pk %}" class="card-link">Update</a></p>
+            {% endif %}
+            {% if perms.webapp.delete_review or review.author == request.user %}
+                <p><a href="{% url 'review_delete' review.pk %}" class="card-link">Delete</a></p>
+            {% endif %}
+        </div>
+         {% endif %}
         {% empty %}
             <p>Нет отзыва</p>
         {% endfor %}
