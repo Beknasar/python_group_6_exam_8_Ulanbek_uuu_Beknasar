@@ -26,10 +26,8 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
-# Автор - внешний ключ к пользователю
-# Товар - внешний ключ к товару
-# Текст отзыва - обязательное, длинный текст
-# Оценка - число от 1 до 5, обязательное
+
+
 class Review(models.Model):
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='reviews', null=True, verbose_name='Автор')
     product = models.ForeignKey('webapp.Product', related_name='product_reviews', on_delete=models.CASCADE,

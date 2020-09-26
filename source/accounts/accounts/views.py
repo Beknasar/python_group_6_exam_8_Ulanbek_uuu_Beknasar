@@ -1,14 +1,11 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LogoutView
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.db.models import Q, Sum
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
 
 from accounts.forms import MyUserCreationForm, UserChangeForm, ProfileChangeForm, PasswordChangeForm
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
@@ -33,6 +30,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 #     return redirect('index')
 from accounts.models import Profile
 from webapp.forms import SearchForm
+from webapp.models import Project
 
 
 class RegisterView(CreateView):
@@ -79,27 +77,21 @@ class UserListView(PermissionRequiredMixin, ListView):
         return self.request.user.groups.filter(pk=2) or self.request.user.groups.filter(pk=3) or self.request.user.pk == 1
 
 
-class UserDetailView(LoginRequiredMixin, PermissionRequiredMixin ,DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = get_user_model()
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
     paginate_related_by = 5
     paginate_related_orphans = 0
 
-    def has_permission(self):
-        return self.request.user.pk == self.kwargs['pk']
-
     def get_context_data(self, **kwargs):
-        # print(self.object.orders.all())
-        # print(self.object)
-        #     for product in order.products.all():
-        #         paginator = Paginator(product, self.paginate_related_by, orphans=self.paginate_related_orphans)
-        #         page_number = self.request.GET.get('page', 1)
-        #         page = paginator.get_page(page_number)
-        #         kwargs['page_obj'] = page
-        #         kwargs['products'] = page.object_list
-        #         kwargs['is_paginated'] = page.has_other_pages()
-        # return super().get_context_data(**kwargs)
+        projects = self.object.projects.order_by('-date_start')
+        paginator = Paginator(projects, self.paginate_related_by, orphans=self.paginate_related_orphans)
+        page_number = self.request.GET.get('page', 1)
+        page = paginator.get_page(page_number)
+        kwargs['page_obj'] = page
+        kwargs['projects'] = page.object_list
+        kwargs['is_paginated'] = page.has_other_pages()
         return super().get_context_data(**kwargs)
 
 
@@ -164,11 +156,3 @@ class UserPasswordChangeView(PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('accounts:login')
-
-
-class BasketClearLogoutView(LogoutView):
-    @method_decorator(never_cache)
-    def dispatch(self, request, *args, **kwargs):
-        basket_ids = request.session.get('basket_ids', [])
-        Basket.objects.filter(pk__in=basket_ids).delete()
-        return super().dispatch(request, *args, **kwargs)

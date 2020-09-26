@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Projects{% endblock %}
+{% block styles %}<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">{% endblock %}
+{#{% block menu %}#}
+{#        <li><a href="" class="down">Categories <i class="fas fa-angle-down"></i></a>#}
+{#          <ul class="submenu">#}
+{#              {% for category in categories %}#}
+{#                  <li><a href="{% url 'product_category' category.pk %}">{{ category.name }}</a></li>#}
+{#              {% endfor %}#}
+{#          </ul>#}
+{#        </li>#}
+{##}
+{#{% endblock %}#}
+{% block search %}
+    <div class="search-form">
+            <form action="{% url 'index' %}" method="GET">
+                <input type="text" name="search">
+                <input type="submit" value="Найти">
+            </form>
+        </div>
+{% endblock %}
+{% block content %}
+<h1>Проекты:</h1>
+    {% include 'partial/product_list.html' %}
+{% endblock %}
