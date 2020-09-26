@@ -165,10 +165,3 @@ class UserPasswordChangeView(PermissionRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('accounts:login')
 
-
-class BasketClearLogoutView(LogoutView):
-    @method_decorator(never_cache)
-    def dispatch(self, request, *args, **kwargs):
-        basket_ids = request.session.get('basket_ids', [])
-        Basket.objects.filter(pk__in=basket_ids).delete()
-        return super().dispatch(request, *args, **kwargs)

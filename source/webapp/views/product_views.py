@@ -1,5 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
+from django.db.models import Avg
+from django.db.models.functions import Coalesce
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, UpdateView, DeleteView, CreateView
 
@@ -16,6 +18,24 @@ class IndexView(SearchView):
     paginate_by = 5
     context_object_name = 'products'
 
+    # def get_context_data(self, **kwargs):
+    #     # context = super().get_context_data(**kwargs)
+    #     # self.average = 0
+    #     # Article.objects.annotate(annotated=Coalesce(Count("field"), 0))
+    #     for product in Product.objects.all():
+    #         product.product_reviews.all().annotate(average=Coalesce(Avg('rating'),0))
+    #     # context['average'] = self.average
+    #     return super().get_context_data(**kwargs)
+
+    # def get_average(self, product):
+    #     reviews = product.product_reviews.all()
+    #     self.average = 0
+    #     for review in reviews:
+    #         self.average += review.rating
+    #     self.average /= reviews.count()
+    #     # print(average)
+    #     return self.average
+
     def get_queryset(self):
         return super().get_queryset()
 
@@ -28,12 +48,25 @@ class ProductView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        average = self.get_average(self.object)
         reviews, page, is_paginated = self.paginate_reviews(self.object)
+        context['average'] = average
         context['reviews'] = reviews
         context['page_obj'] = page
         context['is_paginated'] = is_paginated
         return context
+
+    def get_average(self, product):
+        reviews = product.product_reviews.all()
+        average = 0
+        if reviews:
+            for review in reviews:
+                average += review.rating
+            average /= reviews.count()
+        else:
+            average = 0
+        # print(average)
+        return average
 
     def paginate_reviews(self, product):
         reviews = product.product_reviews.all().order_by('-rating')

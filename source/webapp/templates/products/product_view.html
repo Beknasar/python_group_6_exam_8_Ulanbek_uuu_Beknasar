@@ -20,6 +20,7 @@
         {% endif %}
         <h1>{{ product.name }}</h1>
         <p>Категория: {{ product.category }}</p>
+        <p>Средняя оценка: {{ average }}</p>
         <label>Описание:</label>
         <p class="pre">{{ product.description }}</p>
         <p><a href="{% url 'product_review_add' product.pk %}" class="card-button">Add review</a></p>
@@ -32,8 +33,9 @@
                 <h3>Автор:
                     <a href="{% url 'accounts:detail' review.author_id %}" class="card-link">{{ review.author }}</a>
                 </h3>
-                <hr>
+                <p>Email: {{ review.author.email }}</p>
                 <p>Rate: {{ review.rating }}</p>
+                <hr>
                 <div class="pre">{{ review.text }}</div>
                 {% if perms.webapp.change_review or review.author == request.user %}
                     <p><a href="{% url 'review_update' review.pk %}" class="card-link">Update</a></p>

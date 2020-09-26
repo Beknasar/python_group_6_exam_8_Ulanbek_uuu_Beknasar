@@ -33,5 +33,5 @@ class Review(models.Model):
     product = models.ForeignKey('webapp.Product', related_name='product_reviews', on_delete=models.CASCADE,
                                 verbose_name='Продукты')
     text = models.TextField(max_length=2000,  verbose_name='Текст отзыва')
-    rating = models.IntegerField(verbose_name='Оценка', validators=(MinValueValidator(0),MaxValueValidator(5), ))
+    rating = models.FloatField(verbose_name='Оценка', validators=(MinValueValidator(0),MaxValueValidator(5), ))
 
