@@ -4,14 +4,14 @@ from django.db import models
 
 
 DEFAULT_CATEGORY = 'other'
-CATEGORY_CHOICES = {
+CATEGORY_CHOICES = [
     (DEFAULT_CATEGORY, 'Разное'),
     ('food', "Еда"),
     ('toys', 'Игрушки'),
     ('tech', 'Бытовая техника'),
     ('tools', 'Инструменты'),
     ('chemicals', 'Бытовая химия')
-}
+]
 
 
 class Product(models.Model):
@@ -33,7 +33,7 @@ class Review(models.Model):
     product = models.ForeignKey('webapp.Product', related_name='product_reviews', on_delete=models.CASCADE,
                                 verbose_name='Продукты')
     text = models.TextField(max_length=2000,  verbose_name='Текст отзыва')
-    rating = models.FloatField(verbose_name='Оценка', validators=(MinValueValidator(0),MaxValueValidator(5), ))
+    rating = models.FloatField(verbose_name='Оценка', validators=(MinValueValidator(1),MaxValueValidator(5), ))
     status = models.ForeignKey('webapp.Status', related_name='status', on_delete=models.PROTECT, verbose_name='Статус')
 
     def __str__(self):
